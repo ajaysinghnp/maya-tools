@@ -68,4 +68,67 @@ finally {
   $xl.Quit()
   [void][Runtime.InteropServices.Marshal]::ReleaseComObject($xl)
 }
+
+# ---- Inject ribbon (customUI) into the saved package ----
+$ribbonDir = Join-Path $root "ribbon"
+if (Test-Path $ribbonDir) {
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+    function Read-Entry($zip, $name) {
+        $r = New-Object IO.StreamReader($zip.GetEntry($name).Open())
+        try { $r.ReadToEnd() } finally { $r.Dispose() }
+    }
+    function Write-Entry($zip, $name, $text) {
+        $old = $zip.GetEntry($name); if ($old) { $old.Delete() }
+        $e = $zip.CreateEntry($name)
+        $w = New-Object IO.StreamWriter($e.Open(), (New-Object Text.UTF8Encoding($false)))
+        try { $w.Write($text) } finally { $w.Dispose() }
+    }
+
+    $zip = [IO.Compression.ZipFile]::Open($out, [IO.Compression.ZipArchiveMode]::Update)
+    try {
+        # 1. copy ribbon files into customUI/
+        foreach ($f in Get-ChildItem $ribbonDir -Recurse -File) {
+            $rel  = $f.FullName.Substring($ribbonDir.Length + 1).Replace('\', '/')
+            $name = "customUI/$rel"
+            $old  = $zip.GetEntry($name); if ($old) { $old.Delete() }
+            [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $f.FullName, $name)
+        }
+
+        # 2. root relationships: point the package at the ribbon XML
+        $xml = New-Object Xml.XmlDocument
+        $xml.LoadXml((Read-Entry $zip "_rels/.rels"))
+        $ns = "http://schemas.openxmlformats.org/package/2006/relationships"
+        $wanted = @(
+            @{ Id = "rIdUI07"; File = "customUI.xml";   Type = "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility" },
+            @{ Id = "rIdUI10"; File = "customUI14.xml"; Type = "http://schemas.microsoft.com/office/2007/relationships/ui/extensibility" }
+        )
+        foreach ($w in $wanted) {
+            if (-not (Test-Path (Join-Path $ribbonDir $w.File))) { continue }
+            $target = "customUI/$($w.File)"
+            $found  = $xml.DocumentElement.ChildNodes | Where-Object { $_.Target -eq $target }
+            if (-not $found) {
+                $el = $xml.CreateElement("Relationship", $ns)
+                $el.SetAttribute("Id", $w.Id)
+                $el.SetAttribute("Type", $w.Type)
+                $el.SetAttribute("Target", $target)
+                [void]$xml.DocumentElement.AppendChild($el)
+            }
+        }
+        $text = $xml.OuterXml
+        if (-not $text.StartsWith("<?xml")) { $text = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + $text }
+        Write-Entry $zip "_rels/.rels" $text
+
+        # 3. content types: make sure PNG is declared
+        $ct = Read-Entry $zip "[Content_Types].xml"
+        if ($ct -notmatch 'Extension="png"') {
+            $ct = $ct -replace '(<Types[^>]*>)', '$1<Default Extension="png" ContentType="image/png"/>'
+            Write-Entry $zip "[Content_Types].xml" $ct
+        }
+    }
+    finally { $zip.Dispose() }
+    Write-Host "Ribbon injected from $ribbonDir"
+}
+
 Write-Host "Built $out (v$Version)"
