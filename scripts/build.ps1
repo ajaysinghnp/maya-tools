@@ -1,19 +1,24 @@
 param(
-  [string]$Name = "MayaTools",
-  [string]$Version = "",
-  [string]$Out = "dist\$Name.xlam",
-  [string]$Repo = "ajaysinghnp/MayaTools"   # change to the real owner/repo
+    [string]$Name    = "MayaTools",
+    [string]$Version = "",
+    [string]$Out     = "",
+    [string]$Repo    = "ajaysinghnp/maya-tools"   # your real owner/repo
 )
 
 $root = Split-Path $PSScriptRoot -Parent
-$out = Join-Path $root $Out
 $ansi = [Text.Encoding]::GetEncoding(1252)
 
 # Version: parameter (from CI tag) wins, otherwise the VERSION file
 if (-not $Version) {
-  $Version = (Get-Content (Join-Path $root "VERSION") -Raw).Trim()
+    $Version = (Get-Content (Join-Path $root "VERSION") -Raw).Trim()
 }
 $Version = $Version.TrimStart("v")
+
+# Output name: dist\MayaTools-v2.0.0.xlam unless -Out was given
+if (-not $Out) { $Out = "dist\$Name-v$Version.xlam" }
+$out = Join-Path $root $Out
+
+Get-ChildItem (Split-Path $out) -Filter "$Name-v*.xlam" -ErrorAction SilentlyContinue | Remove-Item -Force
 
 New-Item -ItemType Directory -Force (Split-Path $out) | Out-Null
 if (Test-Path $out) { Remove-Item $out }
