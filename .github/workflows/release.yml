@@ -1,0 +1,25 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: [self-hosted, windows, excel]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build xlam
+        shell: pwsh
+        run: ./scripts/build.ps1 -Version "${{ github.ref_name }}"
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" "dist/MayaTools.xlam" `
+            --title "${{ github.ref_name }}" --generate-notes

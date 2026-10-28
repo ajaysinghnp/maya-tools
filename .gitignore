@@ -1,0 +1,15 @@
+@"
+# build output
+dist/
+
+# scratch copies of the old add-in
+_oldversions/*unlocked*
+
+# Excel/Office temp files
+~`$*
+*.tmp
+
+# editor/OS
+.DS_Store
+Thumbs.db
+"@ | Set-Content .gitignore -Encoding ascii
