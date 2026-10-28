@@ -1,0 +1,175 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+	<ribbon>
+		<tabs>
+			<tab id="mayatools" label="MayaTools" insertAfterMso="TabView">
+				<group id="sheets" label="Sheets" screentip="Options and actions related to the sheets" >
+					<button 
+						id="split_sheets_by_column" 
+						label="Split Sheets By Column"
+						screentip="Splits the data in to multiple sheets categorized by selected column values" 
+						size="large" 
+						onAction="Splitdatabycol" 
+						image="splitSheets" />
+					<button 
+						id="insert_multiple_sheets" 
+						label="Insert Sheets" 
+						screentip="Insert Multiple sheets to the current Workbook" 
+						size="normal" 
+						onAction="InsertMultipleSheets" 
+						image="insertSheets" />
+					<button 
+						id="sort_sheets" 
+						label="Sort Sheets" 
+						screentip="Sort the Entire sheets of the current workbook by their names" 
+						size="normal" 
+						onAction="SortWorksheets" 
+						image="sortSheets" />
+					<button 
+						id="reverse_sheets_order" 
+						label="Reverse Sheets" 
+						screentip="Reverses the Entire sheets of the current workbook" 
+						size="normal" 
+						onAction="ReverseSheets" 
+						image="reverseSheets" />
+				</group>
+				<group id="workbooks" label="Workbooks" screentip="Options and actions related to the Entire Workbook">
+					<button 
+						id="file_backup" 
+						label="Back Up"
+						screentip="Saves the copy of this file with current timestamp in the current directory." 
+						size="large" 
+						onAction="FileBackUp" 
+						image="backUp" />
+					<button 
+						id="Copy_Worksheet_To_New_Workbook" 
+						label="Sheet to New Book" 
+						screentip="Copy Sheet to new Workbook" 
+						size="normal" 
+						onAction="CopyWorksheetToNewWorkbook" 
+						image="sheetsToNewBook" />
+					<button 
+						id="visible_workbooks" 
+						label="Visible Sheets" 
+						screentip="Get all the visible workbooks list." 
+						size="normal" 
+						onAction="VisibleWorkbooks" 
+						image="visibleSheets" />
+					<button 
+						id="close_all_workbooks" 
+						label="Close all Workbooks" 
+						screentip="Closes all open workbooks." 
+						size="normal" 
+						onAction="CloseAllWorkbooks" 
+						image="closeAll" />
+				</group>
+				<group id="formattingFunctions" label="Formatting" screentip="Functions to enhance the speed of work with custom formatting options" >
+					<button 
+						id="Highlight_Duplicate_Values" 
+						label="Highlight Duplicate Values"
+						screentip="Automatically highlight the duplicates values in the selected range." 
+						size="large" 
+						onAction="HighlightDuplicateValues" 
+						image="highlightDuplicates" />
+					<button 
+						id="Highlight_Greater_Than_Values" 
+						label="Highlight Greater"
+						screentip="Automatically highlights the values greater than the prompted value in the selected range." 
+						size="normal" 
+						onAction="HighlightGreaterThanValues" 
+						image="highlightGreater" />
+					<button 
+						id="Highlight_Lower_ThanValues" 
+						label="Highlight Lesser" 
+						screentip="Automatically highlights the values less than the prompted value in the selected range."
+						size="normal" 
+						onAction="HighlightLowerThanValues" 
+						image="highlightLesser" />
+					<button 
+						id="highlight_Negative_Numbers" 
+						label="Highlight Negatives" 
+						screentip="Automatically highlights the negative values in the selected range." 
+						size="normal" 
+						onAction="highlightNegativeNumbers" 
+						image="highlightNegative" />
+				</group>
+				<group id="taxCalculations" label="Tax Helper" screentip="Options and actions related to the Tax Calculations" >
+					<button 
+						id="fill_formatting" 
+						label="Fill Formatting Summary"
+						screentip="Fill the summary calculations format for the data in the selected range" 
+						size="large" 
+						onAction="fillFormat" 
+						image="fillFormat" />
+					<button 
+						id="text_to_numbers" 
+						label="Extract Number"
+						screentip="Extract or Parse the Number from the String" 
+						size="normal" 
+						onAction="ExtrNumbersFromRange" 
+						image="extractNumber" />
+				</group>
+				<group id="helpersFunctions" label="Helper" screentip="Helper Functions to enhance the speed of work" >
+					<button 
+						id="table_of_content" 
+						label="Table of Content"
+						screentip="Automatically add the Table of Content to the workbook." 
+						size="large" 
+						onAction="TableofContent" 
+						image="tableOfContent" />
+					<menu   id="serial_number_menu" label="Add Serial Numbers" itemSize="normal" image="addSerials">
+						<button 
+							id="add_serial_numbers" 
+							label="Serial Numbers"
+							screentip="Automatically add the serial numbers to the sheet up to prompted"
+							onAction="AddSerialNumbers" 
+							image="serialNumbers" />
+						<button 
+							id="add_capital_alphabets" 
+							label="Capital Alphabets"
+							screentip="Automatically add the serial capital alphabets to the sheet up to prompted"
+							onAction="addcAlphabets" 
+							image="capitalSerial" />
+						<button 
+							id="add_small_alphabets" 
+							label="Small Alphabets"
+							screentip="Automatically add the serial small alphabets to the sheet up to prompted"
+							onAction="addsAlphabets" 
+							image="smallSerial" />
+					</menu>
+					<button 
+						id="insert_multiple_columns" 
+						label="Insert Columns" 
+						screentip="Insert multiple columns to the sheets at once" 
+						size="normal" 
+						onAction="InsertMultipleColumns" 
+						image="insertColumn" />
+					<button 
+						id="insert_multiple_rows" 
+						label="Insert Rows" 
+						screentip="Insert multiple rows to the sheets at once" 
+						size="normal" 
+						onAction="InsertMultipleRows" 
+						image="insertRow" />
+				</group>
+				<group id="dev_info" label="Developer" screentip="These are some developer informations" >
+					<button 
+						id="about_developer" 
+						label="About Developer"
+						screentip="Know more about the developer."  
+						size="large" 
+						onAction="aboutDev" 
+						image="aboutDeveloper" />
+					<button 
+						id="web_link" 
+						label="Website" 
+						screentip="Follow the link to get in touch with developer : ajay@mentormaya.com" 
+						size="large" 
+						onAction="webLink" 
+						image="website" />
+				</group>
+
+			</tab>
+		</tabs>
+	</ribbon>
+
+</customUI>
