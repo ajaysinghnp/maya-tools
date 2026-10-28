@@ -13,10 +13,4 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Private Sub infoDeveloper_Click()
 
-End Sub
-
-Private Sub Label1_Click()
-
-End Sub

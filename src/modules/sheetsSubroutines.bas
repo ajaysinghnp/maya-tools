@@ -11,7 +11,7 @@ End Sub
 
 Sub Splitdatabycol(control As IRibbonControl)
 Dim lr As Long
-Dim Ws As Worksheet
+Dim ws As Worksheet
 Dim vcol, i As Integer
 Dim icol As Long
 Dim myarr As Variant
@@ -26,12 +26,12 @@ If TypeName(xTRg) = "Nothing" Then Exit Sub
 Set xVRg = Application.InputBox("Please select the column you want to split data based on:", "MayaTools for Excel", "", Type:=8)
 If TypeName(xVRg) = "Nothing" Then Exit Sub
 vcol = xVRg.Column
-Set Ws = xTRg.Worksheet
-lr = Ws.Cells(Ws.Rows.Count, vcol).End(xlUp).Row
+Set ws = xTRg.Worksheet
+lr = ws.Cells(ws.Rows.Count, vcol).End(xlUp).Row
 title = xTRg.AddressLocal
 titlerow = xTRg.Cells(1).Row
-icol = Ws.Columns.Count
-Ws.Cells(1, icol) = "Unique"
+icol = ws.Columns.Count
+ws.Cells(1, icol) = "Unique"
 Application.DisplayAlerts = False
 If Not Evaluate("=ISREF('xTRgWs_Sheet!A1')") Then
 Sheets.Add(After:=Worksheets(Worksheets.Count)).Name = "xTRgWs_Sheet"
@@ -42,17 +42,17 @@ End If
 Set xWSTRg = Sheets("xTRgWs_Sheet")
 xTRg.Copy
 xWSTRg.Paste Destination:=xWSTRg.Range("A1")
-Ws.Activate
+ws.Activate
 For i = (titlerow + xTRg.Rows.Count) To lr
 On Error Resume Next
-If Ws.Cells(i, vcol) <> "" And Application.WorksheetFunction.Match(Ws.Cells(i, vcol), Ws.Columns(icol), 0) = 0 Then
-Ws.Cells(Ws.Rows.Count, icol).End(xlUp).Offset(1) = Ws.Cells(i, vcol)
+If ws.Cells(i, vcol) <> "" And Application.WorksheetFunction.Match(ws.Cells(i, vcol), ws.Columns(icol), 0) = 0 Then
+ws.Cells(ws.Rows.Count, icol).End(xlUp).Offset(1) = ws.Cells(i, vcol)
 End If
 Next
-myarr = Application.WorksheetFunction.Transpose(Ws.Columns(icol).SpecialCells(xlCellTypeConstants))
-Ws.Columns(icol).Clear
+myarr = Application.WorksheetFunction.Transpose(ws.Columns(icol).SpecialCells(xlCellTypeConstants))
+ws.Columns(icol).Clear
 For i = 2 To UBound(myarr)
-Ws.Range(title).AutoFilter field:=vcol, Criteria1:=myarr(i) & ""
+ws.Range(title).AutoFilter field:=vcol, Criteria1:=myarr(i) & ""
 If Not Evaluate("=ISREF('" & myarr(i) & "'!A1)") Then
 Sheets.Add(After:=Worksheets(Worksheets.Count)).Name = myarr(i) & ""
 Else
@@ -60,50 +60,50 @@ Sheets(myarr(i) & "").Move After:=Worksheets(Worksheets.Count)
 End If
 xWSTRg.Range(title).Copy
 Sheets(myarr(i) & "").Paste Destination:=Sheets(myarr(i) & "").Range("A1")
-Ws.Range("A" & (titlerow + xTRg.Rows.Count) & ":A" & lr).EntireRow.Copy Sheets(myarr(i) & "").Range("A" & (titlerow + xTRg.Rows.Count))
+ws.Range("A" & (titlerow + xTRg.Rows.Count) & ":A" & lr).EntireRow.Copy Sheets(myarr(i) & "").Range("A" & (titlerow + xTRg.Rows.Count))
 Sheets(myarr(i) & "").Columns.AutoFit
 Next
 xWSTRg.Delete
-Ws.AutoFilterMode = False
-Ws.Activate
+ws.AutoFilterMode = False
+ws.Activate
 Application.DisplayAlerts = True
 End Sub
 
 
 Sub HideWorksheet(control As IRibbonControl)
 'hide all the worksheets in your workbook other than the active worksheet
-Dim Ws As Worksheet
-For Each Ws In ThisWorkbook.Worksheets
-If Ws.Name <> ThisWorkbook.ActiveSheet.Name Then
-Ws.Visible = xlSheetHidden
+Dim ws As Worksheet
+For Each ws In ThisWorkbook.Worksheets
+If ws.Name <> ThisWorkbook.ActiveSheet.Name Then
+ws.Visible = xlSheetHidden
 End If
-Next Ws
+Next ws
 End Sub
 Sub UnhideAllWorksheet(control As IRibbonControl)
 'un-hide all the worksheets which you have hide with previous code
-Dim Ws As Worksheet
-For Each Ws In ActiveWorkbook.Worksheets
-Ws.Visible = xlSheetVisible
-Next Ws
+Dim ws As Worksheet
+For Each ws In ActiveWorkbook.Worksheets
+ws.Visible = xlSheetVisible
+Next ws
 End Sub
 Sub DeleteWorksheets(control As IRibbonControl)
-Dim Ws As Worksheet
-For Each Ws In ThisWorkbook.Worksheets
-If Ws.Name <> ThisWorkbook.ActiveSheet.Name Then
+Dim ws As Worksheet
+For Each ws In ThisWorkbook.Worksheets
+If ws.Name <> ThisWorkbook.ActiveSheet.Name Then
 Application.DisplayAlerts = False
-Ws.Delete
+ws.Delete
 Application.DisplayAlerts = True
 End If
-Next Ws
+Next ws
 End Sub
 
 Sub ProtectAllWorskeets(control As IRibbonControl)
-Dim Ws As Worksheet
+Dim ws As Worksheet
 Dim ps As String
 ps = InputBox("Enter a Password.", vbOKCancel)
-For Each Ws In ActiveWorkbook.Worksheets
-Ws.Protect Password:=ps
-Next Ws
+For Each ws In ActiveWorkbook.Worksheets
+ws.Protect Password:=ps
+Next ws
 End Sub
 
 Sub Resize_Charts(control As IRibbonControl)
@@ -163,13 +163,13 @@ End Sub
 
 Sub deleteBlankWorksheets(control As IRibbonControl)
 'it will check all the worksheets in the active workbook and delete if a worksheet is blank.
-Dim Ws As Worksheet
+Dim ws As Worksheet
 On Error Resume Next
 Application.ScreenUpdating = False
 Application.DisplayAlerts = False
-For Each Ws In Application.Worksheets
-If Application.WorksheetFunction.CountA(Ws.UsedRange) = 0 Then
-Ws.Delete
+For Each ws In Application.Worksheets
+If Application.WorksheetFunction.CountA(ws.UsedRange) = 0 Then
+ws.Delete
 End If
 Next
 Application.ScreenUpdating = True
@@ -186,7 +186,7 @@ Sub SaveWorkshetAsPDF(control As IRibbonControl)
     Dim folderPath As String
 
     With Application.FileDialog(msoFileDialogFolderPicker)
-        .Title = "Select folder to save PDFs"
+        .title = "Select folder to save PDFs"
         If .Show <> -1 Then Exit Sub
         folderPath = .SelectedItems(1) & "\"
     End With
