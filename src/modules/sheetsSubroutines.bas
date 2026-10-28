@@ -182,10 +182,22 @@ Rows.EntireRow.Hidden = False
 End Sub
 
 Sub SaveWorkshetAsPDF(control As IRibbonControl)
-Dimws As Worksheet
-For Each Ws In Worksheetsws.ExportAsFixedFormat
-'xlTypePDF, “ENTER-FOLDER-NAME-HERE" & ws.Name & ".pdf" Nextws
+    Dim ws As Worksheet
+    Dim folderPath As String
+
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        .Title = "Select folder to save PDFs"
+        If .Show <> -1 Then Exit Sub
+        folderPath = .SelectedItems(1) & "\"
+    End With
+
+    For Each ws In ActiveWorkbook.Worksheets
+        ws.ExportAsFixedFormat Type:=xlTypePDF, _
+            Filename:=folderPath & ws.Name & ".pdf"
+    Next ws
 End Sub
+
+
 Sub DisablePageBreaks(control As IRibbonControl)
 Dim wb As Workbook
 Dim wks As Worksheet

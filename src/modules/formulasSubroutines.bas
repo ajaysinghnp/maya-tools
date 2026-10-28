@@ -38,7 +38,7 @@ For Each rng In Selection
 rng.Select
 If ActiveCell <> "" Then
 If IsNumeric(ActiveCell.Value) Then
-ActiveCell.Value = ActiveCell.Value & "°"
+ActiveCell.Value = ActiveCell.Value & ChrW(176)
 End If
 End If
 Next
