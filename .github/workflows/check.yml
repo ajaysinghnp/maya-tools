@@ -1,0 +1,14 @@
+name: Check
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source checks
+        shell: pwsh
+        run: ./scripts/check.ps1
