@@ -19,15 +19,19 @@ foreach ($f in Get-ChildItem src -Recurse -Filter *.frm -File) {
 }
 
 # ribbon XML is valid and every callback has a procedure
+$procs = Get-ChildItem src -Recurse -Include *.bas,*.cls -File |
+    Select-String -Pattern '^\s*(?:Public\s+|Private\s+)?(?:Sub|Function)\s+(\w+)' |
+    ForEach-Object { $_.Matches[0].Groups[1].Value }
+
 foreach ($x in "customUI.xml", "customUI14.xml") {
-    $p = "ribbon\$x"
+    $p = "ribbon/$x"
     if (-not (Test-Path $p)) { continue }
     try { $xml = [xml](Get-Content $p -Raw) } catch { $errors += "$x is not valid XML"; continue }
     $callbacks = $xml.SelectNodes("//@*") | Where-Object { $_.Name -match '^(on|get|load)' } |
         ForEach-Object { $_.Value } | Sort-Object -Unique
-    $procs = Select-String -Path src\modules\*.bas -Pattern '^\s*(?:Public\s+|Private\s+)?(?:Sub|Function)\s+(\w+)' |
-        ForEach-Object { $_.Matches[0].Groups[1].Value }
-    foreach ($c in $callbacks) { if ($c -notin $procs) { $errors += "$x : callback '$c' has no matching procedure" } }
+    foreach ($c in $callbacks) {
+        if ($c -notin $procs) { $errors += "$x : callback '$c' has no matching procedure" }
+    }
 }
 
 if ($errors) { $errors | ForEach-Object { Write-Host "FAIL: $_" -ForegroundColor Red }; exit 1 }

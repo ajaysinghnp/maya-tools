@@ -7,20 +7,42 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    runs-on: [self-hosted, windows, excel]
+  release:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build xlam
+      - name: Source checks
         shell: pwsh
-        run: ./scripts/build.ps1 -Version "${{ github.ref_name }}"
+        run: ./scripts/check.ps1
 
-      - name: Create GitHub release
+      - name: Verify the committed build matches the tag
         shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $ver = $tag.TrimStart("v")
+          $file = "releases/MayaTools-$tag.xlam"
+
+          if ((Get-Content VERSION -Raw).Trim() -ne $ver) { throw "VERSION file does not match tag $tag" }
+          if (-not (Test-Path $file)) { throw "$file is missing. Run scripts/release.ps1 so the build is committed." }
+
+          # a valid .xlam is a zip containing the VBA project and the ribbon
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $z = [IO.Compression.ZipFile]::OpenRead((Resolve-Path $file))
+          $names = $z.Entries.FullName
+          $z.Dispose()
+          if ("xl/vbaProject.bin" -notin $names) { throw "No VBA project inside $file" }
+          if ("customUI/customUI14.xml" -notin $names) { throw "No ribbon inside $file" }
+
+          $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLower()
+          "SHA-256 of ``MayaTools-$tag.xlam``: ``$hash``" | Set-Content release-notes.md
+
+      - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" `
-            "dist/MayaTools-${{ github.ref_name }}.xlam" `
-            --title "${{ github.ref_name }}" --generate-notes
+          TAG="${{ github.ref_name }}"
+          FLAGS=""
+          case "$TAG" in *-*) FLAGS="--prerelease" ;; esac
+          gh release create "$TAG" "releases/MayaTools-$TAG.xlam" \
+            --title "$TAG" --notes-file release-notes.md --generate-notes $FLAGS
