@@ -1,6 +1,40 @@
 # Developer guide
 
-How to work on MayaTools: edit the source, build and test the add-in, commit, and publish a release.
+How to work on MayaTools: edit the source, build and test the add-in, document it, commit, and publish a release.
+
+This guide is for contributors. End users should read the [user guide](DOCS.md); the [README](README.md) is the short overview.
+
+## Contents
+
+- [Developer guide](#developer-guide)
+  - [Contents](#contents)
+  - [1. How the repo works](#1-how-the-repo-works)
+  - [2. Prerequisites](#2-prerequisites)
+  - [3. Repository layout](#3-repository-layout)
+    - [Source modules](#source-modules)
+  - [4. The scripts](#4-the-scripts)
+    - [Pipeline order](#pipeline-order)
+  - [5. Daily workflow](#5-daily-workflow)
+    - [Edit in the VBA editor (forms, quick experiments)](#edit-in-the-vba-editor-forms-quick-experiments)
+    - [Edit in a text editor (modules)](#edit-in-a-text-editor-modules)
+    - [`dev.ps1` options](#devps1-options)
+    - [The one rule that prevents data loss](#the-one-rule-that-prevents-data-loss)
+    - [While you work](#while-you-work)
+  - [6. Source rules](#6-source-rules)
+  - [7. Common changes](#7-common-changes)
+    - [Add a module, class or form](#add-a-module-class-or-form)
+    - [Rename or delete a component](#rename-or-delete-a-component)
+    - [Change the ribbon](#change-the-ribbon)
+  - [8. Documenting procedures](#8-documenting-procedures)
+    - [Entry template](#entry-template)
+    - [List procedures (to seed the documentation)](#list-procedures-to-seed-the-documentation)
+  - [9. Versioning and releases](#9-versioning-and-releases)
+    - [Publish a release](#publish-a-release)
+    - [Before you release](#before-you-release)
+    - [Fix a bad release](#fix-a-bad-release)
+  - [10. Commit conventions](#10-commit-conventions)
+  - [11. Troubleshooting](#11-troubleshooting)
+  - [12. Reference: the original add-in](#12-reference-the-original-add-in)
 
 ## 1. How the repo works
 
@@ -9,7 +43,7 @@ An `.xlam` is a zip that contains a binary `vbaProject.bin`. Git cannot diff or 
 - VBA modules, classes and forms live in `src/` as `.bas`, `.cls`, `.frm` (+ `.frx`).
 - The ribbon (custom tab, buttons, icons) lives in `ribbon/`.
 - `scripts/build.ps1` creates a brand-new workbook through Excel automation, imports everything from `src/`, adds a generated `modVersion` module, saves it as an `.xlam` and injects the ribbon files.
-- Building needs desktop Excel, so it only runs on a developer machine. GitHub-hosted runners have no Excel. The release flow (section 8) builds locally and lets GitHub publish the file.
+- Building needs desktop Excel, so it only runs on a developer machine. GitHub-hosted runners have no Excel. The release flow ([section 9](#9-versioning-and-releases)) builds locally and lets GitHub publish the file.
 
 Nothing from an older `.xlam` is carried over into a build, so no leftover sheets, names or other debris.
 
@@ -43,30 +77,56 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 ## 3. Repository layout
 
-```
+```text
 maya-tools/
-?? src/
-?  ?? modules/            standard modules (.bas), may be grouped in subfolders
-?  ?? classes/            class modules (.cls), created on demand
-?  ?? forms/              user forms: .frm + .frx (always together)
-?? ribbon/
-?  ?? customUI.xml        ribbon for Excel 2007
-?  ?? customUI14.xml      ribbon for Excel 2010 and later
-?  ?? images/             button icons (.png)
-?  ?? _rels/              maps image ids to files (needed for the icons)
-?? scripts/               pipeline scripts (section 4)
-?? releases/              built .xlam of each release, committed by release.ps1
-?? _oldversions/          the original v2 add-in (password-locked, reference only)
-?? .github/workflows/     check.yml, release.yml
-?? references.txt         extra library references (Name|GUID|Major|Minor)
-?? VERSION                current version, for example 2.0.0
-?? .gitattributes
-?? .gitignore
-?? README.md
-?? dev.md
+??? src/
+?   ??? modules/            standard modules (.bas), may be grouped in subfolders
+?   ??? classes/            class modules (.cls), created on demand
+?   ??? forms/              user forms: .frm + .frx (always together)
+??? ribbon/
+?   ??? customUI.xml        ribbon for Excel 2007
+?   ??? customUI14.xml      ribbon for Excel 2010 and later
+?   ??? images/             button icons (.png)
+?   ??? _rels/              maps image ids to files (needed for the icons)
+??? scripts/                pipeline scripts (section 4)
+??? releases/               built .xlam of each release, committed by release.ps1
+??? _oldversions/           the original v2 add-in (password-locked, reference only)
+??? .github/workflows/      check.yml, release.yml
+??? references.txt          extra library references (Name|GUID|Major|Minor)
+??? VERSION                 current version, for example 2.0.0
+??? .gitattributes
+??? .gitignore
+??? LICENSE                 MIT License text
+??? README.md               short overview and links
+??? DOCS.md                 user guide and function reference
+??? dev.md                  this guide
 ```
 
 `dist/` (local build output) is git-ignored.
+
+### Source modules
+
+| Source module | Contents |
+| --- | --- |
+| `AdvanceSubroutines` | Advanced routines |
+| `ChartSubroutines` | Chart helpers |
+| `colorFunctions` | Colour functions |
+| `FormattingSubroutines` | Cell and range formatting |
+| `formulasFunctions` | Worksheet functions |
+| `formulasSubroutines` | Formula and cell-content routines |
+| `HeaderFooterSubroutines` | Page header and footer helpers |
+| `HelperSubroutines` | Shared helper routines |
+| `NepaliDatesFunctions` | Nepali (Bikram Sambat) date functions |
+| `pivotTablesSubroutines` | Pivot table helpers |
+| `printSubroutines` | Printing and page setup |
+| `sheetsSubroutines` | Worksheet operations |
+| `SpellNumbers` | Number-to-words functions |
+| `TaxCalculationFormat` | Tax calculation formatting |
+| `TextToNumber` | Text-to-number conversion |
+| `workBookSubroutines` | Workbook-level operations |
+| `aboutDeveloper` (form) | About developer dialog |
+
+The one-line descriptions are provisional and will be refined as the functions are documented in [DOCS.md](DOCS.md#function-reference).
 
 ## 4. The scripts
 
@@ -84,13 +144,13 @@ Run everything from the repo root.
 `check.ps1` verifies:
 
 - the `VERSION` file is a valid version (`2.1.0` or `2.1.0-beta`);
-- every `.bas`, `.cls` and `.frm` file is pure ASCII (see section 6);
+- every `.bas`, `.cls` and `.frm` file is pure ASCII (see [section 6](#6-source-rules));
 - every `.frm` has its `.frx`;
 - the ribbon XML files are valid and every callback (`onAction`, `getImage`, and so on) has a matching `Sub` or `Function` in `src/`.
 
 ### Pipeline order
 
-```
+```text
 dev.ps1
  ?? (-Export)            export.ps1   dev copy -> src/, references.txt
  ?? check.ps1                         source checks
@@ -145,7 +205,7 @@ Form code-behind can be edited as text too (below the `Attribute VB_...` lines i
 | `-CloseExcel` | Close running Excel instances instead of stopping with an error |
 | `-Force` | Rebuild even if the dev copy holds edits that were never exported (they are lost) |
 
-`dev.ps1` commits only `src/`, `ribbon/` and `references.txt`. Commit scripts, `VERSION` and workflows separately.
+`dev.ps1` commits only `src/`, `ribbon/` and `references.txt`. Commit scripts, `VERSION`, workflows and documentation separately.
 
 ### The one rule that prevents data loss
 
@@ -178,11 +238,11 @@ Form code-behind can be edited as text too (below the `Attribute VB_...` lines i
 
 ### Add a module, class or form
 
-Create it in the VBE (*Insert, Module / Class Module / UserForm*), name it in the Properties window (F4), save, close Excel, then run `./scripts/dev.ps1 -Export`. New files land in `src/modules`, `src/classes` or `src/forms`. Move them into a subfolder if you like; later exports update them where they live.
+Create it in the VBE (*Insert, Module / Class Module / UserForm*), name it in the Properties window (F4), save, close Excel, then run `./scripts/dev.ps1 -Export`. New files land in `src/modules`, `src/classes` or `src/forms`. Move them into a subfolder if you like; later exports update them where they live. Then add the new module to the [source modules table](#source-modules) and to the function reference in [DOCS.md](DOCS.md#function-reference).
 
 ### Rename or delete a component
 
-Do it in the VBE, then `./scripts/dev.ps1 -Export`. The export warns about files in `src/` that no longer have a component. Add `-Prune` to `export.ps1` to delete them (run `./scripts/export.ps1 -Prune`), or delete them by hand.
+Do it in the VBE, then `./scripts/dev.ps1 -Export`. The export warns about files in `src/` that no longer have a component. Add `-Prune` to `export.ps1` to delete them (run `./scripts/export.ps1 -Prune`), or delete them by hand. Update the documentation to match.
 
 ### Change the ribbon
 
@@ -194,7 +254,42 @@ Sub MyButtonClick(control As IRibbonControl)
 
 `check.ps1` catches a missing procedure. If the tab does not appear, enable *File, Options, Advanced, General, Show add-in user interface errors* and restart Excel. Excel then reports the exact XML or relationship problem.
 
+## 8. Documenting procedures
+
+The end-user function reference lives in [DOCS.md](DOCS.md#function-reference). Every public procedure gets an entry in the section of its module, and procedures called from the ribbon are marked with the button they belong to. Write entries for the people who use the released file, not for contributors. DOCS.md groups entries by task, not by module name, so use the [source modules table](#source-modules) to decide which section a procedure belongs in.
+
+### Entry template
+
+Copy this block for each procedure:
+
+```markdown
+#### ProcedureName
+
+| | |
+|---|---|
+| Type | `Function` / `Sub` |
+| Signature | `Function ProcedureName(arg1 As String, Optional arg2 As Long = 0) As String` |
+| Ribbon button | Tab / group / button label, or "none" (callable from formulas or code) |
+| Description | What it does, in one or two sentences |
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `arg1` | `String` | ... |
+
+**Returns**: what a `Function` returns (omit for a `Sub`).
+
+**Example**
+
+    =ProcedureName("text")
+
+**Notes**: edge cases, limitations, required references.
+```
+
 ### List procedures (to seed the documentation)
+
+Run from the repo root to list every procedure in every module as a starting point:
 
 ```powershell
 Get-ChildItem src -Recurse -Include *.bas,*.cls | ForEach-Object {
@@ -204,7 +299,9 @@ Get-ChildItem src -Recurse -Include *.bas,*.cls | ForEach-Object {
 }
 ```
 
-## 8. Versioning and releases
+Private procedures appear in the output too; document only the public ones and the ribbon callbacks.
+
+## 9. Versioning and releases
 
 The version lives in one place, the `VERSION` file, for example `2.1.0`. The build writes it into the generated `modVersion` module, so the About form and a future update check read `ADDIN_VERSION`. Built files are named `MayaTools-v<version>.xlam`; dev builds use `<version>-dev`.
 
@@ -234,6 +331,11 @@ CI cannot prove that the binary was built from the source (only Excel can build 
 
 `.github/workflows/check.yml` also runs `check.ps1` on every push and pull request.
 
+### Before you release
+
+- The installation steps in [DOCS.md](DOCS.md#installation) still match how the file is installed and named.
+- New or changed procedures are documented in the [function reference](DOCS.md#function-reference).
+
 ### Fix a bad release
 
 Prefer a new patch version. If you must redo the same version:
@@ -245,18 +347,21 @@ git push origin :refs/tags/v2.1.0
 
 then delete the release on GitHub (*Releases, the release, Delete*) and run `release.ps1` again.
 
-## 9. Commit conventions
+## 10. Commit conventions
 
 - One topic per commit, in the form `<module or form>: <what changed>`, for example `aboutDeveloper: show version`.
 - Commit `.frm` and `.frx` together.
 - `.frm` diffs are readable (positions, captions, fonts). `.frx` shows as a binary change. A re-exported form can reorder a few lines, so commit only what you meant to change.
 - Pipeline changes (`scripts/`, `.github/`) go in their own commits, separate from add-in changes.
+- Documentation and license changes (`README.md`, `DOCS.md`, `dev.md`, `LICENSE`) go in their own commits, in the form `docs: <what changed>`.
 
-## 10. Troubleshooting
+## 11. Troubleshooting
+
+These are problems when building or developing. For problems using the installed add-in, see the [user troubleshooting table](DOCS.md#troubleshooting).
 
 | Symptom | Cause and fix |
 | --- | --- |
-| `Programmatic access to Visual Basic Project is not trusted` / "Cannot access the VBA project" | Enable the Trust Center setting (section 2). If it keeps reverting, a policy controls it |
+| `Programmatic access to Visual Basic Project is not trusted` / "Cannot access the VBA project" | Enable the Trust Center setting ([section 2](#2-prerequisites)). If it keeps reverting, a policy controls it |
 | "The VBA project is locked with a password" | Remove the password in the VBE (*Tools, VBAProject Properties, Protection*), save, close Excel |
 | "0 components" | Macros blocked for the file, or the project is locked. Check the Trust Center and unblock the file |
 | "Excel is running" | Close Excel, including hidden processes (`Get-Process EXCEL`), or use `-CloseExcel` |
@@ -265,12 +370,12 @@ then delete the release on GitHub (*Releases, the release, Delete*) and run `rel
 | Compile error "User-defined type not defined" | A library reference is missing; add it to `references.txt` |
 | Duplicate definition errors on compile | A component exists twice (for example `modVersion` in `src/`), or two files share a name in different folders |
 | Form looks broken after a build | The `.frx` is missing or not next to the `.frm`, or was changed by line-ending conversion |
-| Ribbon tab missing | Enable add-in UI errors (section 7). Check both XML files are valid and the old add-in is not loaded as well |
+| Ribbon tab missing | Enable add-in UI errors ([section 7](#change-the-ribbon)). Check both XML files are valid and the old add-in is not loaded as well |
 | Ribbon button does nothing | Callback name in the XML has no matching procedure (`check.ps1` reports it) |
 | `release.ps1` says "Source checks failed" with no details above | A leftover exit code from an earlier command; add `exit 0` as the last line of `check.ps1` |
 | Release workflow: "file is missing" | The tag was created by hand. Delete it and use `release.ps1` so the build is committed before the tag |
 | Downloaded `.xlam` is blocked | Run `Unblock-File` on it, or right-click, Properties, Unblock |
 
-## 11. Reference: the original add-in
+## 12. Reference: the original add-in
 
 `_oldversions/MayaTools v2.xlam` is the original, password-locked add-in. Its source was exported manually once to create `src/`. Keep it for reference only; do not use it as input to the scripts.
