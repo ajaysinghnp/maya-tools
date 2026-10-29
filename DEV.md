@@ -18,6 +18,7 @@ This guide is for contributors. End users should read the [user guide](DOCS.md);
     - [Edit in the VBA editor (forms, quick experiments)](#edit-in-the-vba-editor-forms-quick-experiments)
     - [Edit in a text editor (modules)](#edit-in-a-text-editor-modules)
     - [`dev.ps1` options](#devps1-options)
+    - [Working with AI coding agents](#working-with-ai-coding-agents)
     - [The one rule that prevents data loss](#the-one-rule-that-prevents-data-loss)
     - [While you work](#while-you-work)
   - [6. Source rules](#6-source-rules)
@@ -91,11 +92,15 @@ maya-tools/
 ??? scripts/                pipeline scripts (section 4)
 ??? releases/               built .xlam of each release, committed by release.ps1
 ??? _oldversions/           the original v2 add-in (password-locked, reference only)
-??? .github/workflows/      check.yml, release.yml
+??? .github/
+?   ??? workflows/          check.yml, release.yml
+?   ??? copilot-instructions.md   rules for GitHub Copilot
 ??? references.txt          extra library references (Name|GUID|Major|Minor)
 ??? VERSION                 current version, for example 2.0.0
 ??? .gitattributes
 ??? .gitignore
+??? AGENTS.md               rules for AI coding agents (Copilot, Claude Code, others)
+??? CLAUDE.md               Claude Code entry point, imports AGENTS.md
 ??? LICENSE                 MIT License text
 ??? README.md               short overview and links
 ??? DOCS.md                 user guide and function reference
@@ -206,6 +211,13 @@ Form code-behind can be edited as text too (below the `Attribute VB_...` lines i
 | `-Force` | Rebuild even if the dev copy holds edits that were never exported (they are lost) |
 
 `dev.ps1` commits only `src/`, `ribbon/` and `references.txt`. Commit scripts, `VERSION`, workflows and documentation separately.
+
+### Working with AI coding agents
+
+The repo ships instructions for AI agents: `AGENTS.md` (the main file, read by Copilot, Claude Code and others), `CLAUDE.md` (imports `AGENTS.md`) and `.github/copilot-instructions.md` (a short self-contained copy for GitHub Copilot). They tell agents the source rules, that they must not run the Excel-driven scripts, and to update [DOCS.md](DOCS.md) when procedures change.
+
+- Agents edit text files only. You still build and test on your Windows machine with `./scripts/dev.ps1`.
+- If you change a source rule in [section 6](#6-source-rules), update `AGENTS.md` and `.github/copilot-instructions.md` in the same commit so they do not drift.
 
 ### The one rule that prevents data loss
 
@@ -353,7 +365,7 @@ then delete the release on GitHub (*Releases, the release, Delete*) and run `rel
 - Commit `.frm` and `.frx` together.
 - `.frm` diffs are readable (positions, captions, fonts). `.frx` shows as a binary change. A re-exported form can reorder a few lines, so commit only what you meant to change.
 - Pipeline changes (`scripts/`, `.github/`) go in their own commits, separate from add-in changes.
-- Documentation and license changes (`README.md`, `DOCS.md`, `dev.md`, `LICENSE`) go in their own commits, in the form `docs: <what changed>`.
+- Documentation, license and agent-instruction changes (`README.md`, `DOCS.md`, `dev.md`, `LICENSE`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`) go in their own commits, in the form `docs: <what changed>`.
 
 ## 11. Troubleshooting
 
