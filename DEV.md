@@ -195,6 +195,7 @@ Form code-behind can be edited as text too (below the `Attribute VB_...` lines i
 | `-NoOpen` | Do not open Excel at the end |
 | `-CloseExcel` | Close running Excel instances instead of stopping with an error |
 | `-Force` | Rebuild even if the dev copy holds edits that were never exported (they are lost) |
+| `-NextVersion 2.1.0` | Label the dev build `2.1.0-dev` instead of the next patch version after `VERSION` |
 
 `dev.ps1` commits only `src/`, `ribbon/` and `references.txt`. Commit scripts, `VERSION`, workflows and documentation separately.
 
@@ -325,7 +326,7 @@ Private procedures appear in the output too; document only the public ones and t
 
 ## 9. Versioning and releases
 
-The version lives in one place, the `VERSION` file, for example `2.1.0`. The build writes it into the generated `modVersion` module, so the About form and a future update check read `ADDIN_VERSION`. Built files are named `MayaTools-v<version>.xlam`; dev builds use `<version>-dev`.
+The version lives in one place, the `VERSION` file, for example `2.1.0`. The build writes it into the generated `modVersion` module, so the About form and a future update check read `ADDIN_VERSION`. Built files are named `MayaTools-v<version>.xlam`. Dev builds are labelled with the next version: after releasing 2.0.1 the dev build is `2.0.2-dev`. When the next release will be a minor or major bump, run `./scripts/dev.ps1 -NextVersion 2.1.0`.
 
 ### Publish a release
 
