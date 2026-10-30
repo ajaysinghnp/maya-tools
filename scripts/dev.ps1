@@ -11,6 +11,7 @@ Development pipeline:
   ./scripts/dev.ps1 -NoOpen                          do not open Excel at the end
   ./scripts/dev.ps1 -CloseExcel                      close running Excel instances instead of stopping
   ./scripts/dev.ps1 -Force                           rebuild even if the dev copy holds edits never exported
+  ./scripts/dev.ps1 -NextVersion 2.1.0               label the dev build 2.1.0-dev (default: next patch after VERSION)
 
 Commits cover src\, ribbon\ and references.txt only. Scripts, VERSION and workflows are committed separately.
 #>
@@ -21,7 +22,8 @@ param(
     [switch]$Yes,
     [switch]$NoOpen,
     [switch]$Force,
-    [switch]$CloseExcel
+    [switch]$CloseExcel,
+    [string]$NextVersion
 )
 
 $ErrorActionPreference = "Stop"
@@ -61,7 +63,7 @@ if ($LASTEXITCODE -ne 0) { throw "Source checks failed. Fix the problems above, 
 
 # 3. Build the dev copy (opening it is done at the end, after the commit step)
 Write-Step "Build dev copy"
-& "$PSScriptRoot/build-dev.ps1" -NoOpen -Force:$Force
+& "$PSScriptRoot/build-dev.ps1" -NoOpen -Force:$Force -NextVersion $NextVersion
 
 # 4. Review and commit
 if ($Commit -or $Message) {
