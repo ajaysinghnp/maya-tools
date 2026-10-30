@@ -8,28 +8,28 @@
 						label="Split Sheets By Column"
 						screentip="Splits the data in to multiple sheets categorized by selected column values" 
 						size="large" 
-						onAction="Splitdatabycol" 
+						onAction="Ribbon_SplitSheetsByColumn" 
 						image="splitSheets" />
 					<button 
 						id="insert_multiple_sheets" 
 						label="Insert Sheets" 
 						screentip="Insert Multiple sheets to the current Workbook" 
 						size="normal" 
-						onAction="InsertMultipleSheets" 
+						onAction="Ribbon_InsertSheets" 
 						image="InsertMultipleSheets" />
 					<button 
 						id="sort_sheets" 
 						label="Sort Sheets" 
 						screentip="Sort the Entire sheets of the current workbook by their names" 
 						size="normal" 
-						onAction="SortWorksheets" 
+						onAction="Ribbon_SortSheets" 
 						image="SortWorksheets" />
 					<button 
 						id="reverse_sheets_order" 
 						label="Reverse Sheets" 
 						screentip="Reverses the Entire sheets of the current workbook" 
 						size="normal" 
-						onAction="ReverseSheets" 
+						onAction="Ribbon_ReverseSheets" 
 						image="reverseSheets" />
 				</group>
 				<group id="workbooks" label="Workbooks" screentip="Options and actions related to the Entire Workbook">
@@ -38,28 +38,28 @@
 						label="Back Up"
 						screentip="Saves the copy of this file with current timestamp in the current directory." 
 						size="large" 
-						onAction="FileBackUp" 
+						onAction="Ribbon_BackUp" 
 						image="FileBackUp" />
 					<button 
 						id="Copy_Worksheet_To_New_Workbook" 
 						label="Sheet to New Book" 
 						screentip="Copy Sheet to new Workbook" 
 						size="normal" 
-						onAction="CopyWorksheetToNewWorkbook" 
+						onAction="Ribbon_SheetToNewBook" 
 						image="CopyWorksheetToNewWorkbook" />
 					<button 
 						id="visible_workbooks" 
 						label="Visible Sheets" 
 						screentip="Get all the visible workbooks list." 
 						size="normal" 
-						onAction="VisibleWorkbooks" 
+						onAction="Ribbon_VisibleSheets" 
 						image="VisibleWorkbooks" />
 					<button 
 						id="close_all_workbooks" 
 						label="Close all Workbooks" 
 						screentip="Closes all open workbooks." 
 						size="normal" 
-						onAction="CloseAllWorkbooks" 
+						onAction="Ribbon_CloseAllWorkbooks" 
 						image="CloseAllWorkbooks" />
 				</group>
 				<group id="formattingFunctions" label="Formatting" screentip="Functions to enhance the speed of work with custom formatting options" >
@@ -68,28 +68,28 @@
 						label="Highlight Duplicate Values"
 						screentip="Automatically highlight the duplicates values in the selected range." 
 						size="large" 
-						onAction="HighlightDuplicateValues" 
+						onAction="Ribbon_HighlightDuplicates" 
 						image="highlightDuplicates" />
 					<button 
 						id="Highlight_Greater_Than_Values" 
 						label="Highlight Greater"
 						screentip="Automatically highlights the values greater than the prompted value in the selected range." 
 						size="normal" 
-						onAction="HighlightGreaterThanValues" 
+						onAction="Ribbon_HighlightGreater" 
 						image="highlightGreater" />
 					<button 
 						id="Highlight_Lower_ThanValues" 
 						label="Highlight Lesser" 
 						screentip="Automatically highlights the values less than the prompted value in the selected range."
 						size="normal" 
-						onAction="HighlightLowerThanValues" 
+						onAction="Ribbon_HighlightLesser" 
 						image="highlightLesser" />
 					<button 
 						id="highlight_Negative_Numbers" 
 						label="Highlight Negatives" 
 						screentip="Automatically highlights the negative values in the selected range." 
 						size="normal" 
-						onAction="highlightNegativeNumbers" 
+						onAction="Ribbon_HighlightNegatives" 
 						image="highlightNegative" />
 				</group>
 				<group id="taxCalculations" label="Tax Helper" screentip="Options and actions related to the Tax Calculations" >
@@ -98,14 +98,14 @@
 						label="Fill Formatting Summary"
 						screentip="Fill the summary calculations format for the data in the selected range" 
 						size="large" 
-						onAction="fillFormat" 
+						onAction="Ribbon_FillFormattingSummary" 
 						image="fillFormat" />
 					<button 
 						id="text_to_numbers" 
 						label="Extract Number"
 						screentip="Extract or Parse the Number from the String" 
 						size="normal" 
-						onAction="ExtrNumbersFromRange" 
+						onAction="Ribbon_ExtractNumber" 
 						image="extractNumber" />
 				</group>
 				<group id="helpersFunctions" label="Helper" screentip="Helper Functions to enhance the speed of work" >
@@ -114,26 +114,26 @@
 						label="Table of Content"
 						screentip="Automatically add the Table of Content to the workbook." 
 						size="large" 
-						onAction="TableofContent" 
+						onAction="Ribbon_TableOfContent" 
 						image="tableOfContent" />
 					<menu   id="serial_number_menu" label="Add Serial Numbers" itemSize="normal" image="serial_numbers">
 						<button 
 							id="add_serial_numbers" 
 							label="Serial Numbers"
 							screentip="Automatically add the serial numbers to the sheet up to prompted"
-							onAction="AddSerialNumbers" 
+							onAction="Ribbon_SerialNumbers" 
 							image="serialNumbers" />
 						<button 
 							id="add_capital_alphabets" 
 							label="Capital Alphabets"
 							screentip="Automatically add the serial capital alphabets to the sheet up to prompted"
-							onAction="addcAlphabets" 
+							onAction="Ribbon_CapitalAlphabets" 
 							image="addcAlphabets" />
 						<button 
 							id="add_small_alphabets" 
 							label="Small Alphabets"
 							screentip="Automatically add the serial small alphabets to the sheet up to prompted"
-							onAction="addsAlphabets" 
+							onAction="Ribbon_SmallAlphabets" 
 							image="addsAlphabets" />
 					</menu>
 					<button 
@@ -141,14 +141,14 @@
 						label="Insert Columns" 
 						screentip="Insert multiple columns to the sheets at once" 
 						size="normal" 
-						onAction="InsertMultipleColumns" 
+						onAction="Ribbon_InsertColumns" 
 						image="insertColumns" />
 					<button 
 						id="insert_multiple_rows" 
 						label="Insert Rows" 
 						screentip="Insert multiple rows to the sheets at once" 
 						size="normal" 
-						onAction="InsertMultipleRows" 
+						onAction="Ribbon_InsertRows" 
 						image="insertRows" />
 				</group>
 				<group id="dev_info" label="Developer" screentip="These are some developer informations" >
@@ -157,14 +157,14 @@
 						label="About Developer"
 						screentip="Know more about the developer."  
 						size="large" 
-						onAction="aboutDev" 
+						onAction="Ribbon_AboutDeveloper" 
 						image="devInfo" />
 					<button 
 						id="web_link" 
 						label="Website" 
 						screentip="Follow the link to get in touch with developer : ajay@mentormaya.com" 
 						size="large" 
-						onAction="webLink" 
+						onAction="Ribbon_WebLink" 
 						image="webLink" />
 				</group>
 
