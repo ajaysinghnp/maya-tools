@@ -42,4 +42,6 @@ The source is kept as plain-text VBA modules in this repository and built into a
 
 MayaTools is released under the [MIT License](LICENSE). You may use, copy, modify, share and even sell it, free of charge, as long as you keep the copyright notice and the license text with every copy or substantial portion. In practice: credit the author.
 
+Ribbon icons are from [Lucide](https://lucide.dev) (ISC License); see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 Developed by Ajay ([@ajaysinghnp](https://github.com/ajaysinghnp)).

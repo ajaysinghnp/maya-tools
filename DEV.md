@@ -6,36 +6,18 @@ This guide is for contributors. End users should read the [user guide](DOCS.md);
 
 ## Contents
 
-- [Developer guide](#developer-guide)
-  - [Contents](#contents)
-  - [1. How the repo works](#1-how-the-repo-works)
-  - [2. Prerequisites](#2-prerequisites)
-  - [3. Repository layout](#3-repository-layout)
-    - [Source modules](#source-modules)
-  - [4. The scripts](#4-the-scripts)
-    - [Pipeline order](#pipeline-order)
-  - [5. Daily workflow](#5-daily-workflow)
-    - [Edit in the VBA editor (forms, quick experiments)](#edit-in-the-vba-editor-forms-quick-experiments)
-    - [Edit in a text editor (modules)](#edit-in-a-text-editor-modules)
-    - [`dev.ps1` options](#devps1-options)
-    - [Working with AI coding agents](#working-with-ai-coding-agents)
-    - [The one rule that prevents data loss](#the-one-rule-that-prevents-data-loss)
-    - [While you work](#while-you-work)
-  - [6. Source rules](#6-source-rules)
-  - [7. Common changes](#7-common-changes)
-    - [Add a module, class or form](#add-a-module-class-or-form)
-    - [Rename or delete a component](#rename-or-delete-a-component)
-    - [Change the ribbon](#change-the-ribbon)
-  - [8. Documenting procedures](#8-documenting-procedures)
-    - [Entry template](#entry-template)
-    - [List procedures (to seed the documentation)](#list-procedures-to-seed-the-documentation)
-  - [9. Versioning and releases](#9-versioning-and-releases)
-    - [Publish a release](#publish-a-release)
-    - [Before you release](#before-you-release)
-    - [Fix a bad release](#fix-a-bad-release)
-  - [10. Commit conventions](#10-commit-conventions)
-  - [11. Troubleshooting](#11-troubleshooting)
-  - [12. Reference: the original add-in](#12-reference-the-original-add-in)
+1. [How the repo works](#1-how-the-repo-works)
+2. [Prerequisites](#2-prerequisites)
+3. [Repository layout](#3-repository-layout)
+4. [The scripts](#4-the-scripts)
+5. [Daily workflow](#5-daily-workflow)
+6. [Source rules](#6-source-rules)
+7. [Common changes](#7-common-changes)
+8. [Documenting procedures](#8-documenting-procedures)
+9. [Versioning and releases](#9-versioning-and-releases)
+10. [Commit conventions](#10-commit-conventions)
+11. [Troubleshooting](#11-troubleshooting)
+12. [Reference: the original add-in](#12-reference-the-original-add-in)
 
 ## 1. How the repo works
 
@@ -89,13 +71,14 @@ maya-tools/
 ?   ??? customUI14.xml      ribbon for Excel 2010 and later
 ?   ??? images/             button icons (.png)
 ?   ??? _rels/              maps image ids to files (needed for the icons)
-??? scripts/                pipeline scripts (section 4)
+??? scripts/                pipeline scripts (section 4), icons.json, icons-src/, make-icons.ps1, check-icons.ps1
 ??? releases/               built .xlam of each release, committed by release.ps1
 ??? _oldversions/           the original v2 add-in (password-locked, reference only)
 ??? .github/
 ?   ??? workflows/          check.yml, release.yml
 ?   ??? copilot-instructions.md   rules for GitHub Copilot
 ??? references.txt          extra library references (Name|GUID|Major|Minor)
+??? THIRD-PARTY-NOTICES.md  license notices for the icons (generated)
 ??? VERSION                 current version, for example 2.0.0
 ??? .gitattributes
 ??? .gitignore
@@ -145,13 +128,16 @@ Run everything from the repo root.
 | `scripts/check.ps1` | Source checks (also run by GitHub Actions) |
 | `scripts/build.ps1` | Builds `dist\MayaTools-v<version>.xlam` from `src/` and `ribbon/` |
 | `scripts/release.ps1` | Builds, commits the file under `releases/`, tags and pushes. GitHub publishes the release |
+| `scripts/make-icons.ps1` | Generates `ribbon/images/*.png`, the `ribbon/_rels` files and `THIRD-PARTY-NOTICES.md` from `scripts/icons.json` and the SVGs in `scripts/icons-src/`. PowerShell only (uses Windows' built-in WPF drawing), no Excel needed |
+| `scripts/check-icons.ps1` | Ribbon icon checks, called by `check.ps1` |
 
 `check.ps1` verifies:
 
 - the `VERSION` file is a valid version (`2.1.0` or `2.1.0-beta`);
 - every `.bas`, `.cls` and `.frm` file is pure ASCII (see [section 6](#6-source-rules));
 - every `.frm` has its `.frx`;
-- the ribbon XML files are valid and every callback (`onAction`, `getImage`, and so on) has a matching `Sub` or `Function` in `src/`.
+- the ribbon XML files are valid and every callback (`onAction`, `getImage`, and so on) has a matching `Sub` or `Function` in `src/`;
+- every ribbon `image` id is listed in the matching `_rels` file, points to an existing PNG, and that PNG is 32x32 with transparency (`check-icons.ps1`).
 
 ### Pipeline order
 
@@ -265,6 +251,30 @@ Sub MyButtonClick(control As IRibbonControl)
 ```
 
 `check.ps1` catches a missing procedure. If the tab does not appear, enable *File, Options, Advanced, General, Show add-in user interface errors* and restart Excel. Excel then reports the exact XML or relationship problem.
+
+### Change a ribbon icon
+
+Ribbon icons are generated, not drawn by hand. They all come from one icon set ([Lucide](https://lucide.dev)), in one colour, as 32x32 PNGs with a transparent background, so they stay consistent and render the same on every machine.
+
+1. Find an icon name on [lucide.dev/icons](https://lucide.dev/icons).
+2. Edit `scripts/icons.json`: add or change the line `"<image id>": "<lucide name>"`. The image id is the `image="..."` value in the ribbon XML. To change the colour or size for every icon, edit `color` or `size` at the top (the size must stay 32 to match `check-icons.ps1`).
+3. Generate:
+
+   ```powershell
+   ./scripts/make-icons.ps1
+   ```
+
+   A new icon's SVG is downloaded once from the pinned Lucide version (`lucideVersion` in `icons.json`) into `scripts/icons-src/`. Commit those SVGs, so later runs work offline and give the same result. If PowerShell 7 cannot load WPF, run `powershell -ExecutionPolicy Bypass -File scripts\make-icons.ps1` (Windows PowerShell 5.1).
+4. Commit `scripts/icons.json`, `scripts/icons-src/`, `ribbon/images/`, `ribbon/_rels/` and `THIRD-PARTY-NOTICES.md` together, then run `./scripts/dev.ps1` to see the result in Excel.
+
+The generator removes PNGs in `ribbon/images/` that are not in `icons.json`. Do not hand-edit the generated PNGs or the `.rels` files; the next run overwrites them. Use a new image id for every distinct icon, and never point two buttons at one id unless you want the same icon on both.
+
+`check.ps1` runs `check-icons.ps1`. If you are setting this up for the first time, add this before the final `exit 0` of `check.ps1`:
+
+```powershell
+& "$PSScriptRoot/check-icons.ps1"
+if ($LASTEXITCODE -ne 0) { exit 1 }
+```
 
 ## 8. Documenting procedures
 
@@ -383,6 +393,7 @@ These are problems when building or developing. For problems using the installed
 | Duplicate definition errors on compile | A component exists twice (for example `modVersion` in `src/`), or two files share a name in different folders |
 | Form looks broken after a build | The `.frx` is missing or not next to the `.frm`, or was changed by line-ending conversion |
 | Ribbon tab missing | Enable add-in UI errors ([section 7](#change-the-ribbon)). Check both XML files are valid and the old add-in is not loaded as well |
+| Ribbon icon is blank, black or a white box | Run `./scripts/check-icons.ps1`. The image id must be listed in the `.rels` file and the PNG must be 32x32 with transparency. Regenerate with `./scripts/make-icons.ps1` instead of editing PNGs by hand |
 | Ribbon button does nothing | Callback name in the XML has no matching procedure (`check.ps1` reports it) |
 | `release.ps1` says "Source checks failed" with no details above | A leftover exit code from an earlier command; add `exit 0` as the last line of `check.ps1` |
 | Release workflow: "file is missing" | The tag was created by hand. Delete it and use `release.ps1` so the build is committed before the tag |

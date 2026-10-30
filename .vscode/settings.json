@@ -1,5 +1,15 @@
 {
   "files.encoding": "windows1252",
   "files.autoGuessEncoding": false,
-  "cSpell.words": ["oldversions", "subfolders"]
+  "cSpell.words": [
+    "addc",
+    "Extr",
+    "informations",
+    "mayatools",
+    "oldversions",
+    "screentip",
+    "Splitdatabycol",
+    "subfolders",
+    "Tableof"
+  ]
 }
