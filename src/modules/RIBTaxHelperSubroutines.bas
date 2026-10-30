@@ -1,3 +1,5 @@
+Attribute VB_Name = "RIBTaxHelperSubroutines"
+
 Attribute VB_Name = "TaxCalculationFormat"
 Sub fillFormat(control As IRibbonControl)
 'Subroutine to fill the format by calling sumFormat function

@@ -1,4 +1,5 @@
 Attribute VB_Name = "TextToNumber"
+
 Sub ExtrNumbersFromRange(control As IRibbonControl)
     Dim xRg As Range
     Dim xDRg As Range
