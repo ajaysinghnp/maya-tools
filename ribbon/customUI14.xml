@@ -106,7 +106,7 @@
 						screentip="Extract or Parse the Number from the String" 
 						size="normal" 
 						onAction="ExtrNumbersFromRange" 
-						image="splitSheets" />
+						image="extractNumber" />
 				</group>
 				<group id="helpersFunctions" label="Helper" screentip="Helper Functions to enhance the speed of work" >
 					<button 

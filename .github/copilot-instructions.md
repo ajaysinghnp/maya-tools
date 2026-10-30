@@ -23,6 +23,7 @@ MayaTools is an Excel add-in (`.xlam`) of VBA tools with a custom ribbon tab (Ne
 - Keep both `customUI` files in sync.
 - Every callback in the XML must have a matching procedure in `src/` with the correct signature, for example `Sub MyButtonClick(control As IRibbonControl)`.
 - Every image id must be listed under `ribbon/_rels/`.
+- Icons are generated from Lucide: edit `scripts/icons.json` and ask the developer to run `./scripts/make-icons.ps1` (needs Windows). Never hand-edit `ribbon/images/*.png`, `ribbon/_rels/*` or `THIRD-PARTY-NOTICES.md`.
 
 ## Docs
 

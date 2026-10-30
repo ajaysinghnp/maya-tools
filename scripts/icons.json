@@ -1,0 +1,30 @@
+{
+  "lucideVersion": "1.63.0",
+  "color": "#217346",
+  "size": 32,
+  "icons": {
+    "splitSheets": "split",
+    "InsertMultipleSheets": "file-plus",
+    "SortWorksheets": "arrow-down-a-z",
+    "reverseSheets": "arrow-left-right",
+    "FileBackUp": "database-backup",
+    "CopyWorksheetToNewWorkbook": "file-output",
+    "VisibleWorkbooks": "eye",
+    "CloseAllWorkbooks": "circle-x",
+    "highlightDuplicates": "copy",
+    "highlightGreater": "circle-chevron-up",
+    "highlightLesser": "circle-chevron-down",
+    "highlightNegative": "circle-minus",
+    "fillFormat": "paint-bucket",
+    "extractNumber": "hash",
+    "tableOfContent": "table-of-contents",
+    "serial_numbers": "list-ordered",
+    "serialNumbers": "arrow-down-0-1",
+    "addcAlphabets": "case-upper",
+    "addsAlphabets": "case-lower",
+    "insertColumns": "between-vertical-start",
+    "insertRows": "between-horizontal-start",
+    "devInfo": "user-round",
+    "webLink": "globe"
+  }
+}

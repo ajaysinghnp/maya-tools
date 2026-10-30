@@ -16,14 +16,14 @@
 						screentip="Insert Multiple sheets to the current Workbook" 
 						size="normal" 
 						onAction="InsertMultipleSheets" 
-						image="insertSheets" />
+						image="InsertMultipleSheets" />
 					<button 
 						id="sort_sheets" 
 						label="Sort Sheets" 
 						screentip="Sort the Entire sheets of the current workbook by their names" 
 						size="normal" 
 						onAction="SortWorksheets" 
-						image="sortSheets" />
+						image="SortWorksheets" />
 					<button 
 						id="reverse_sheets_order" 
 						label="Reverse Sheets" 
@@ -39,28 +39,28 @@
 						screentip="Saves the copy of this file with current timestamp in the current directory." 
 						size="large" 
 						onAction="FileBackUp" 
-						image="backUp" />
+						image="FileBackUp" />
 					<button 
 						id="Copy_Worksheet_To_New_Workbook" 
 						label="Sheet to New Book" 
 						screentip="Copy Sheet to new Workbook" 
 						size="normal" 
 						onAction="CopyWorksheetToNewWorkbook" 
-						image="sheetsToNewBook" />
+						image="CopyWorksheetToNewWorkbook" />
 					<button 
 						id="visible_workbooks" 
 						label="Visible Sheets" 
 						screentip="Get all the visible workbooks list." 
 						size="normal" 
 						onAction="VisibleWorkbooks" 
-						image="visibleSheets" />
+						image="VisibleWorkbooks" />
 					<button 
 						id="close_all_workbooks" 
 						label="Close all Workbooks" 
 						screentip="Closes all open workbooks." 
 						size="normal" 
 						onAction="CloseAllWorkbooks" 
-						image="closeAll" />
+						image="CloseAllWorkbooks" />
 				</group>
 				<group id="formattingFunctions" label="Formatting" screentip="Functions to enhance the speed of work with custom formatting options" >
 					<button 
@@ -116,7 +116,7 @@
 						size="large" 
 						onAction="TableofContent" 
 						image="tableOfContent" />
-					<menu   id="serial_number_menu" label="Add Serial Numbers" itemSize="normal" image="addSerials">
+					<menu   id="serial_number_menu" label="Add Serial Numbers" itemSize="normal" image="serial_numbers">
 						<button 
 							id="add_serial_numbers" 
 							label="Serial Numbers"
@@ -128,13 +128,13 @@
 							label="Capital Alphabets"
 							screentip="Automatically add the serial capital alphabets to the sheet up to prompted"
 							onAction="addcAlphabets" 
-							image="capitalSerial" />
+							image="addcAlphabets" />
 						<button 
 							id="add_small_alphabets" 
 							label="Small Alphabets"
 							screentip="Automatically add the serial small alphabets to the sheet up to prompted"
 							onAction="addsAlphabets" 
-							image="smallSerial" />
+							image="addsAlphabets" />
 					</menu>
 					<button 
 						id="insert_multiple_columns" 
@@ -142,14 +142,14 @@
 						screentip="Insert multiple columns to the sheets at once" 
 						size="normal" 
 						onAction="InsertMultipleColumns" 
-						image="insertColumn" />
+						image="insertColumns" />
 					<button 
 						id="insert_multiple_rows" 
 						label="Insert Rows" 
 						screentip="Insert multiple rows to the sheets at once" 
 						size="normal" 
 						onAction="InsertMultipleRows" 
-						image="insertRow" />
+						image="insertRows" />
 				</group>
 				<group id="dev_info" label="Developer" screentip="These are some developer informations" >
 					<button 
@@ -158,18 +158,17 @@
 						screentip="Know more about the developer."  
 						size="large" 
 						onAction="aboutDev" 
-						image="aboutDeveloper" />
+						image="devInfo" />
 					<button 
 						id="web_link" 
 						label="Website" 
 						screentip="Follow the link to get in touch with developer : ajay@mentormaya.com" 
 						size="large" 
 						onAction="webLink" 
-						image="website" />
+						image="webLink" />
 				</group>
 
 			</tab>
 		</tabs>
 	</ribbon>
-
 </customUI>

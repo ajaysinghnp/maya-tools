@@ -23,6 +23,7 @@ Building and exporting need **Windows with desktop Excel**, which you normally d
 
 - **Do**: edit `.bas` / `.cls` files, ribbon XML, scripts and Markdown docs.
 - **Do**: run `./scripts/check.ps1` when PowerShell 7 (`pwsh`) is available. It needs no Excel.
+- **Do not** run `make-icons.ps1` (it needs Windows drawing, WPF). After editing `scripts/icons.json`, tell the developer to run it.
 - **Do not** run `build.ps1`, `build-dev.ps1`, `export.ps1`, `dev.ps1` or `release.ps1`. They drive Excel and can overwrite the developer's unexported edits.
 - **Do not** commit, push, tag or publish a release unless asked.
 - **Do not** edit anything in `releases/`, `dist/` or `_oldversions/`, and never touch `.xlam` files.
@@ -43,6 +44,7 @@ Building and exporting need **Windows with desktop Excel**, which you normally d
 - Keep `ribbon/customUI.xml` and `ribbon/customUI14.xml` in step.
 - Every callback (`onAction`, `getImage`, ...) needs a matching `Sub` or `Function` in `src/` with the right signature, for example `Sub MyButtonClick(control As IRibbonControl)`.
 - Every image id must be listed in the matching file under `ribbon/_rels/`.
+- **Icons are generated.** Never hand-edit `ribbon/images/*.png`, the files in `ribbon/_rels/` or `THIRD-PARTY-NOTICES.md`. To add or change an icon, edit `scripts/icons.json` (image id -> Lucide icon name) and ask the developer to run `./scripts/make-icons.ps1`. All icons stay one colour, 32x32, transparent. Use a unique image id per icon.
 
 ## Documentation rules
 
