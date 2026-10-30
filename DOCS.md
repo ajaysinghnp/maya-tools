@@ -172,4 +172,5 @@ MayaTools is free to use, at home or at work, under the [MIT License](LICENSE).
 
 - **You may**: use it, copy it, share it, modify it, and include it in your own work, including commercial work.
 - **You must**: give credit to the author, Ajay ([@ajaysinghnp](https://github.com/ajaysinghnp)), by keeping the copyright notice and license text with any copy or substantial portion you distribute.
+- **Icons**: the ribbon icons come from the [Lucide](https://lucide.dev) icon set (ISC License). Its notice is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - **No warranty**: the add-in is provided as is, and the author is not liable for problems arising from its use. Keep a backup of important workbooks before running bulk changes.
