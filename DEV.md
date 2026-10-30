@@ -107,6 +107,7 @@ maya-tools/
 | `NepaliDatesFunctions` | Nepali (Bikram Sambat) date functions |
 | `pivotTablesSubroutines` | Pivot table helpers |
 | `printSubroutines` | Printing and page setup |
+| `RibbonCallbacks` | Entry point of every ribbon button (all `onAction` callbacks) |
 | `sheetsSubroutines` | Worksheet operations |
 | `SpellNumbers` | Number-to-words functions |
 | `TaxCalculationFormat` | Tax calculation formatting |
@@ -245,7 +246,7 @@ Do it in the VBE, then `./scripts/dev.ps1 -Export`. The export warns about files
 
 ### Change the ribbon
 
-Edit `ribbon/customUI14.xml` and keep `ribbon/customUI.xml` in step with it. Icons go in `ribbon/images/`, and each image id must be listed in the matching file under `ribbon/_rels/`. Every callback name in the XML needs a procedure with the right signature, for example:
+Edit `ribbon/customUI14.xml` and keep `ribbon/customUI.xml` in step with it. Icons go in `ribbon/images/`, and each image id must be listed in the matching file under `ribbon/_rels/`. Every callback in the XML needs a procedure with the right signature. **All ribbon callbacks live in one module, `src/modules/RibbonCallbacks.bas`**, named `Ribbon_<Action>` (for example `onAction="Ribbon_WebLink"`). A callback only checks that it can run (for example that a workbook is open) and then calls the procedure that does the work, which can be in any other module. Trivial actions, such as opening the website, are written in `RibbonCallbacks` itself. Do not put ribbon callbacks anywhere else. The signature is:
 
 ```vba
 Sub MyButtonClick(control As IRibbonControl)
