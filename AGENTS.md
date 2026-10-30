@@ -42,7 +42,8 @@ Building and exporting need **Windows with desktop Excel**, which you normally d
 ## Ribbon rules
 
 - Keep `ribbon/customUI.xml` and `ribbon/customUI14.xml` in step.
-- Every callback (`onAction`, `getImage`, ...) needs a matching `Sub` or `Function` in `src/` with the right signature, for example `Sub MyButtonClick(control As IRibbonControl)`.
+- Every callback (`onAction`, `getImage`, ...) needs a matching `Sub` or `Function` in `src/` with the right signature, for example `Sub Ribbon_WebLink(control As IRibbonControl)`.
+- **All ribbon callbacks live in `src/modules/RibbonCallbacks.bas`**, named `Ribbon_<Action>`. A callback checks it can run (for example `RequireWorkbook()`, because `ActiveWorkbook` is `Nothing` when no workbook is open and causes run-time error 91) and then calls the procedure that does the work. Put one- or two-line actions directly in `RibbonCallbacks`. Never add a callback in another module. Use `ThisWorkbook` (the add-in), never `ActiveWorkbook`, for things that must work without an open workbook.
 - Every image id must be listed in the matching file under `ribbon/_rels/`.
 - **Icons are generated.** Never hand-edit `ribbon/images/*.png`, the files in `ribbon/_rels/` or `THIRD-PARTY-NOTICES.md`. To add or change an icon, edit `scripts/icons.json` (image id -> Lucide icon name) and ask the developer to run `./scripts/make-icons.ps1`. All icons stay one colour, 32x32, transparent. Use a unique image id per icon.
 
